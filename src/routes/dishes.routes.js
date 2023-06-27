@@ -12,6 +12,7 @@ const dishesController = new DishesController();
 
 dishesRoutes.use(bodyParser.urlencoded({ extended: true }))
 dishesRoutes.post('/', upload.single('file'), dishesController.create)
+dishesRoutes.get('/', dishesController.show)
 
 
 module.exports = dishesRoutes
