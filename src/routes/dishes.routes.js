@@ -1,14 +1,17 @@
 const { Router } = require('express');
 const dishesRoutes = Router();
 
+const bodyParser = require('body-parser')
+
 const multer = require('multer')
-const uploadConfig = require('../configs/upload')
-const upload = multer(uploadConfig.MULTER)
+const uploadConfig = require('../configs/upload');
+const upload = multer(uploadConfig.MULTER);
 
-const DishesIMagesController = require('../controllers/DishesImagesController');
-const dishesImagesController = new DishesIMagesController();
+const DishesController = require('../controllers/DishesController');
+const dishesController = new DishesController();
 
-dishesRoutes.post('/dishes-images', upload.single('dish'), dishesImagesController.create)
+dishesRoutes.use(bodyParser.urlencoded({ extended: true }))
+dishesRoutes.post('/', upload.single('file'), dishesController.create)
 
 
 module.exports = dishesRoutes
