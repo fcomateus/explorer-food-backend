@@ -34,11 +34,7 @@ class DishesController {
         const { name, category, price, ingredients, description } = request.body
         const isInfoInvalid = [name,category,price, ingredients, description].includes(null) || [name,category,price,description].includes('')
 
-        console.log(name);
-        console.log(category);
-        console.log(price);
-        console.log(description);
-        console.log(ingredients);
+        console.log(request.files);
 
         if(isInfoInvalid) {
             throw new AppError('Informações inválidas', 401)
@@ -47,7 +43,7 @@ class DishesController {
         const dishOldInfos = await knex('dishes').where({ id }).returning('*');
         
         let newImagePath = ''
-        if(request.file.filename != null || request.file.filename != '') {
+        if(request.files != null && (request.files[0].filename != null && request.files[0].filename != '')) {
             const dishFilename = request.file.filename
             const diskStorage = new DiskStorage();
             await diskStorage.deleteFile(dishOldInfos.image_path)
