@@ -8,3 +8,9 @@ Food Explorer uses Node.js + Express, Knex.js, dotenv, SQLite and follows an org
 
 It's the final project of Explorer program on Rocketseat
 
+## Running the project
+Using Node 18
+- set server port on dotenv
+- npm install
+- npx knex migrate:latest
+- npm run dev
