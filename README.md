@@ -14,3 +14,12 @@ Using Node 18
 - npm install
 - npx knex migrate:latest
 - npm run dev
+
+## Diferent type of users
+In Food Explorer we have 2 types of users: costumer and admin.
+
+Costumers see the dishes, but can't edit
+Admins can see and edit dishes.
+
+When you create an account, you are automatically an costumer. 
+To switch to admin, go on the database and change the role from `costumer` to `admin`
