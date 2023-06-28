@@ -1,6 +1,6 @@
 const knex = require('../database/knex');
 const AppError = require('../utils/AppError')
-const DiskStorage = require('../providers/DiskStorage')
+const DiskStorage = require('../providers/DiskStorage');
 
 class DishesController {
     async create (request, response){
@@ -28,6 +28,46 @@ class DishesController {
         return response.status(201).json(dish)
     }
 
+
+    async update(request, response) {
+        const { id } = request.params
+        const { name, category, price, ingredients, description } = request.body
+        const isInfoInvalid = [name,category,price, ingredients, description].includes(null) || [name,category,price,description].includes('')
+
+        console.log(name);
+        console.log(category);
+        console.log(price);
+        console.log(description);
+        console.log(ingredients);
+
+        if(isInfoInvalid) {
+            throw new AppError('Informações inválidas', 401)
+        }
+
+        const dishOldInfos = await knex('dishes').where({ id }).returning('*');
+        
+        let newImagePath = ''
+        if(request.file.filename != null || request.file.filename != '') {
+            const dishFilename = request.file.filename
+            const diskStorage = new DiskStorage();
+            await diskStorage.deleteFile(dishOldInfos.image_path)
+            newImagePath = await diskStorage.saveFile(dishFilename)
+        }
+
+        const updatedDish = await knex('dishes').where({ id })
+        .update({
+            name,
+            category_id: category,
+            price,
+            description,
+            ingredients,
+            image_path: newImagePath != '' ? newImagePath : dishOldInfos.image_path
+        }).returning('*')
+
+        return response.json(updatedDish)
+
+    }
+
     async show(request, response) {
         const dishes = await knex('dishes')
         return response.json(dishes)
@@ -41,15 +81,21 @@ class DishesController {
 
     async delete(request, response) {
         const { id } = request.params
+        const diskStorage = new DiskStorage()
 
-        let deletedDish
         try {
-            deletedDish = await knex('dishes').where({ id }).del().returning('*')
+            const dish = await knex('dishes').where({ id })
+            if(dish) {
+                await knex('dishes').where({ id }).del().returning('*')
+                await diskStorage.deleteFile(dish.image_path)
+            } else {
+                throw new AppError('Não encontrado')
+            }
         } catch(error) {
            throw new AppError('Não foi possível deletar o prato') 
         }
 
-        return response.status(200).json(deletedDish)
+        return response.status(200).json(dish)
     }
 }
 
