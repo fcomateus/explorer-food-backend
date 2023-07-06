@@ -12,11 +12,12 @@ const dishesController = new DishesController();
 
 
 dishesRoutes.use(bodyParser.urlencoded({ extended: true }))
-dishesRoutes.post('/:id', upload.any(), dishesController.update)
-dishesRoutes.delete('/:id', dishesController.delete)
-dishesRoutes.get('/:id', dishesController.index)
 dishesRoutes.get('/', dishesController.show)
 dishesRoutes.post('/', upload.single('file'), dishesController.create)
+dishesRoutes.post('/:id', upload.any(), dishesController.update)
+dishesRoutes.get('/:id', dishesController.index)
+dishesRoutes.get('/:term', dishesController.search)
+dishesRoutes.delete('/:id', dishesController.delete)
 
 
 module.exports = dishesRoutes

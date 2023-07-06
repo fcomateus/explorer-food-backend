@@ -70,17 +70,29 @@ class DishesController {
     async index(request, response) {
         const { id } = request.params
         const dish = await knex('dishes').where({ id }).first()
-        response.status(200).json(dish)
+        return response.status(200).json(dish)
+    }
+
+    async search(request, response) {
+        const { term } = request.params
+        const dishes = await knex('dishes').whereIlike('name', `%${term}%`)
+        console.log('dishes founded',dishes);
+        
+        
+
     }
 
     async delete(request, response) {
         const { id } = request.params
+        console.log('id',id);
+
         const diskStorage = new DiskStorage()
 
+        const dish = await knex('dishes').where({ id }).first()
+
         try {
-            const dish = await knex('dishes').where({ id })
             if(dish) {
-                await knex('dishes').where({ id }).del().returning('*')
+                await knex('dishes').where({ id }).del()
                 await diskStorage.deleteFile(dish.image_path)
             } else {
                 throw new AppError('Não encontrado')
