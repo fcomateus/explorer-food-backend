@@ -84,7 +84,6 @@ class DishesController {
 
     async delete(request, response) {
         const { id } = request.params
-        console.log('id',id);
 
         const diskStorage = new DiskStorage()
 
