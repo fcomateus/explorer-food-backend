@@ -73,15 +73,6 @@ class DishesController {
         return response.status(200).json(dish)
     }
 
-    async search(request, response) {
-        const { term } = request.params
-        const dishes = await knex('dishes').whereIlike('name', `%${term}%`)
-        console.log('dishes founded',dishes);
-        
-        
-
-    }
-
     async delete(request, response) {
         const { id } = request.params
 
