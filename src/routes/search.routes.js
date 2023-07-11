@@ -4,6 +4,6 @@ const searchRoutes = Router();
 const SearchController = require('../controllers/SearchController');
 const searchController = new SearchController();
 
-searchRoutes.get('/:term', searchController.show)
+searchRoutes.get('/', searchController.show)
 
 module.exports = searchRoutes
